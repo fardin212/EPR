@@ -1,0 +1,3 @@
+{
+  "/api/accounting/period-locks/route": "app/api/accounting/period-locks/route.js"
+}

@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 16, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/middleware.ts"],"sourcesContent":["import { NextRequest, NextResponse } from \"next/server\";\r\n\r\nexport function middleware(req: NextRequest) {\r\n  const { pathname } = req.nextUrl;\r\n\r\n  const protectedPaths = [\"/dashboard\"];\r\n\r\n  const isProtected = protectedPaths.some((path) =>\r\n    pathname.startsWith(path),\r\n  );\r\n\r\n  if (!isProtected) {\r\n    return NextResponse.next();\r\n  }\r\n\r\n  const session = req.cookies.get(\"session\")?.value;\r\n\r\n  if (!session) {\r\n    const loginUrl = new URL(\"/login\", req.url);\r\n    return NextResponse.redirect(loginUrl);\r\n  }\r\n\r\n  return NextResponse.next();\r\n}\r\n\r\nexport const config = {\r\n  matcher: [\"/dashboard/:path*\", \"/dashboard\"],\r\n};\r\n"],"names":[],"mappings":";;;;;;AAAA;AAAA;;AAEO,SAAS,WAAW,GAAgB;IACzC,MAAM,EAAE,QAAQ,EAAE,GAAG,IAAI,OAAO;IAEhC,MAAM,iBAAiB;QAAC;KAAa;IAErC,MAAM,cAAc,eAAe,IAAI,CAAC,CAAC,OACvC,SAAS,UAAU,CAAC;IAGtB,IAAI,CAAC,aAAa;QAChB,OAAO,gMAAY,CAAC,IAAI;IAC1B;IAEA,MAAM,UAAU,IAAI,OAAO,CAAC,GAAG,CAAC,YAAY;IAE5C,IAAI,CAAC,SAAS;QACZ,MAAM,WAAW,IAAI,IAAI,UAAU,IAAI,GAAG;QAC1C,OAAO,gMAAY,CAAC,QAAQ,CAAC;IAC/B;IAEA,OAAO,gMAAY,CAAC,IAAI;AAC1B;AAEO,MAAM,SAAS;IACpB,SAAS;QAAC;QAAqB;KAAa;AAC9C"}}]
+}

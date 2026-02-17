@@ -1,0 +1,391 @@
+// ============= Generator & Datasource =============
+
+// prisma/schema.prisma
+
+generator client {
+  provider      = "prisma-client-js"
+  engineType    = "library"                   // اجبار Node-API
+  binaryTargets = ["debian-openssl-1.0.x"]   // مطابق خروجی libssl سرور
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("mysql://conexnikan:N%40rges21Fardin@127.0.0.1:3306/conexnikancom_mysite")
+}
+
+/**
+ * ===========================
+ * Enums
+ * ===========================
+ */
+
+enum ModerationStatus {
+  pending
+  approved
+  rejected
+}
+
+enum PostStatus {
+  draft
+  published
+  pending
+}
+
+enum MessageRole {
+  USER
+  ADMIN
+  SYSTEM
+}
+
+enum ChatStatus {
+  OPEN
+  CLOSED
+  ARCHIVED
+}
+
+enum ChatSource {
+  ONLINE
+  WHATSAPP
+  TELEGRAM
+}
+
+enum OrderType {
+  CONEX // کانکس
+  CONTAINER // کانتینر
+  REPAIR // تعمیرات/بازسازی
+}
+
+enum OrderStatus {
+  NEW
+  SEEN
+  QUOTED
+  WON
+  LOST
+  DONE
+  IN_PROGRESS
+  NOT_DONE
+  ARCHIVED
+}
+
+/**
+ * ===========================
+ * Core Models
+ * ===========================
+ */
+
+model Category {
+  id       Int        @id @default(autoincrement())
+  name     String
+  slug     String     @unique
+  parentId Int?
+  parent   Category?  @relation("CategoryToSelf", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryToSelf")
+
+  imageUrl String? // ← کاور/آیکون دسته
+
+  projects Project[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  slug        String    @unique
+  summary     String?
+  description String?
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id])
+
+  // --- SEO & routing ---
+  city      String? // شهر برای ساخت اسلاگ/متن
+  meters    Int? // متراژ کل (برای {meters} در اسلاگ/متون)
+  metaTitle String?
+  metaDesc  String?
+
+  // --- Hero ---
+  heroAlt String? // Alt تصویر هدر (تصویر شاخص همان images[0])
+
+  // --- Quick bullets (3–4) ---
+  bullets Json? // Array<string>
+
+  // --- Gallery (اختیاری: اگر خواستید جدا از جدول Image نگه دارید) ---
+  gallery Json? // Array<{url:string, alt?:string}>
+
+  // --- Specs ---
+  specFrame    String? // سازه/شاسی
+  specWalls    String? // دیوار/سقف/عایق
+  specInterior String? // کف/دیوارپوش/پنجره/درب
+  specMEP      String? // برق/آب/گرمایش
+  specLogistic String? // حمل و نصب
+
+  // --- Cost ---
+  priceRange   String? // «حدود قیمت/رنج» این پروژه
+  priceFactors String? // عوامل موثر افزایش/کاهش
+
+  // --- Challenges & solutions ---
+  challenges String? // چالش‌ها و راهکارها
+
+  // --- Testimonial ---
+  clientName  String?
+  clientQuote String?
+
+  // --- CTA ---
+  ctaWhatsapp String? // لینک واتساپ/شماره برای دکمه «استعلام قیمت»
+
+  // --- FAQ ---
+  faq       Json? // Array<{ q: string, a: string }>
+  linksText String? // هر خط یک لینک (internal/external)
+
+  images Image[]
+
+  // back-relations
+  questions ProjectQuestion[]
+  comments  ProjectComment[]
+}
+
+model ProjectQuestion {
+  id         Int              @id @default(autoincrement())
+  project    Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId  Int
+  name       String
+  phone      String? // اختیاری
+  question   String
+  answer     String? // ادمین بعداً پاسخ می‌دهد
+  status     ModerationStatus @default(approved) // اگر می‌خواهی اول تأیید شود: pending
+  createdAt  DateTime         @default(now())
+  answeredAt DateTime?
+
+  @@index([projectId, status, createdAt])
+}
+
+model ProjectComment {
+  id        Int              @id @default(autoincrement())
+  project   Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId Int
+  name      String
+  rating    Int              @default(5) // 1..5
+  body      String
+  status    ModerationStatus @default(approved)
+  createdAt DateTime         @default(now())
+
+  @@index([projectId, status, createdAt])
+  @@index([projectId, rating])
+}
+
+model Image {
+  id  Int     @id @default(autoincrement())
+  url String
+  alt String?
+
+  projectId Int?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/**
+ * ===========================
+ * Banners (for homepage slider)
+ * ===========================
+ */
+model Banner {
+  id       Int     @id @default(autoincrement())
+  title    String?
+  imageUrl String
+  link     String?
+  active   Boolean @default(true)
+  sort     Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/**
+ * ===========================
+ * Chat / Live Support
+ * ===========================
+ * در کد از ChatSession + Message استفاده می‌شود.
+ */
+
+model ChatSession {
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastMessageAt DateTime? // برای سورت و نوتیف؛ در روت‌ها به‌روز می‌شود
+
+  status ChatStatus @default(OPEN)
+  name   String?
+  phone  String?
+
+  // فیلد جدید برای منبع گفتگو (رفع Unknown argument `source`)
+  source ChatSource?
+
+  messages Message[] // ← فقط یک‌بار!
+
+  @@index([status])
+  @@index([lastMessageAt])
+}
+
+model Message {
+  id        Int         @id @default(autoincrement())
+  sessionId Int
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  role    MessageRole @default(USER)
+  content String
+
+  createdAt DateTime @default(now())
+
+  @@index([sessionId, id])
+}
+
+/**
+ * (Legacy) اگر قبلاً از تک‌جدولی ChatMessage استفاده می‌کردی؛
+ * نگه داشتنش الزام ندارد، اما حذفش هم مشکلی ندارد.
+ */
+model ChatMessage {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  ip        String?
+  name      String?
+  phone     String?
+  text      String
+  source    ChatSource @default(ONLINE)
+  meta      Json?
+}
+
+/**
+ * ===========================
+ * Orders / Site / Blog
+ * ===========================
+ */
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // اطلاعات تماس
+  name  String
+  phone String
+  city  String?
+
+  // دسته‌بندی سفارش
+  type   OrderType
+  status OrderStatus @default(NEW)
+
+  // ابعاد عمومی (متری) — اینجا String گذاشتی، پس ما هم String ذخیره می‌کنیم
+  length String?
+  width  String?
+  height String?
+
+  // تنظیمات عمومی
+  insulation  String? // پشم‌سنگ / XPS / فوم / ...
+  electricity String? // پایه / کامل
+  plumbing    String? // سرویس / بدون
+  delivery    String? // زمان تحویل مدنظر
+
+  // جزئیات اختصاصی کانکس
+  frame   String? // سازه/شاسی
+  facade  String? // نما
+  windows String? // درب/پنجره
+  rooms   String? // تقسیم‌بندی
+  wc      String? // سرویس بهداشتی
+
+  // جزئیات اختصاصی کانتینر
+  size      String? // 20ft / 40ft
+  condition String? // نو / دست‌دوم
+  doors     String? // وضعیت درب/کفی
+  mods      String? // تغییرات مدنظر
+
+  // مشترک
+  notes String?
+
+  // متادیتا
+  source String? @default("ONLINE")
+  ip     String?
+
+  // (اختیاری) نگه‌داری مسیر تصاویر آپلود شده
+  imagesJson String?
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model AdminMessage {
+  id        String   @id @default(cuid())
+  message   String
+  sessionId String?  // اگر سشن آی‌دی داری
+  createdAt DateTime @default(now())
+}
+
+model SiteSetting {
+  id           Int      @id @default(1) // singleton: همیشه ردیف 1
+  siteName     String? // نام سایت
+  logoUrl      String? // آدرس لوگو (ترجیحاً SVG/PNG)
+  heroUrl      String? // آدرس بنر هرو
+  brandPrimary String?  @default("#0B1220") // رنگ اصلی (پس‌زمینه‌ی تیره)
+  brandAccent  String?  @default("#FF7A1A") // رنگ تأکید (طلایی/نارنجی)
+  updatedAt    DateTime @updatedAt
+  chatEnabled  Boolean  @default(false)
+  whatsapp     String? // مثال: "98912XXXXXXX" (بدون +)
+  telegram     String? // مثال: "nikan_support" (بدون @)
+}
+
+model Post {
+  id     Int        @id @default(autoincrement())
+  title  String
+  slug   String     @unique
+  status PostStatus @default(draft)
+
+  // محتوا
+  excerpt String?
+  body    String?
+
+  // کاور
+  coverUrl String?
+  coverAlt String?
+
+  // دسته (اختیاریِ ساده)
+  category String?
+
+  // ==== تغییر اصلی: رابطه با تگ‌ها ====
+  tags Tag[] // <- به جای String[]
+
+  // سئو
+  metaTitle   String?
+  metaDesc    String?
+  canonical   String?
+  ogTitle     String?
+  ogImage     String?
+  readMinutes Int?
+  toc         Boolean @default(false)
+  noindex     Boolean @default(false)
+  nofollow    Boolean @default(false)
+  featured    Boolean @default(false)
+
+  // تاریخ‌ها
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([featured, publishedAt])
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String
+  slug  String @unique
+  posts Post[] // رابطهٔ ضمنی many-to-many (Prisma خودش جدول واسط می‌سازد)
+
+  createdAt DateTime @default(now())
+
+  @@unique([name]) // جلوگیری از ساخت تگ تکراری
+}

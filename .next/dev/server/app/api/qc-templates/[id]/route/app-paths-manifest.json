@@ -1,0 +1,3 @@
+{
+  "/api/qc-templates/[id]/route": "app/api/qc-templates/[id]/route.js"
+}

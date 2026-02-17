@@ -1,0 +1,3 @@
+{
+  "/api/treasury/cheques/due/route": "app/api/treasury/cheques/due/route.js"
+}

@@ -1,0 +1,173 @@
+/* --- Tailwind --- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- پایه سیستم --- */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "IRANYekan", system-ui, sans-serif;
+  background-color: #f3f4f6; /* slate-100 */
+  color: #0f172a; /* slate-900 */
+  direction: rtl;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* --- خاموش کردن نسخه قدیمی ERP (کلاس‌های ui-*) --- */
+.ui-wrapper,
+.ui-sidebar,
+.ui-main,
+.ui-topbar,
+.ui-topbar-title,
+.ui-topbar-user,
+.ui-avatar,
+.ui-content,
+.ui-menu,
+.ui-menu-item,
+.ui-menu-item:hover,
+.ui-menu-item.active,
+.card {
+  all: unset !important;
+}
+/* =========================
+   Print (A4) – فاکتور/پیش‌فاکتور
+   ========================= */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* عناصر غیر ضروری را در چاپ مخفی کن */
+  .print-hide {
+    display: none !important;
+  }
+
+  /* ظرف اصلی چاپ */
+  .print-sheet {
+    width: 100% !important;
+    max-width: 210mm !important;
+    margin: 0 auto !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+  }
+
+  /* کارت‌ها در چاپ فشرده‌تر */
+  .print-card {
+    border-radius: 12px !important;
+    box-shadow: none !important;
+  }
+  .print-card.p-4 {
+    padding: 10px !important;
+  }
+
+  /* گرید مشخصات: فشرده‌تر و دو ستونه */
+  .spec-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px 10px !important;
+  }
+  .spec-item {
+    padding: 8px !important;
+  }
+
+  /* جدول: RTL واقعی، جلوگیری از شکستن ردیف‌ها */
+  table.invoice-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    direction: rtl !important;
+  }
+  table.invoice-table th,
+  table.invoice-table td {
+    text-align: right !important;
+    vertical-align: top !important;
+    padding: 6px 8px !important;
+  }
+  table.invoice-table tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* برای عددها: تراز چپ تا خوانایی بالا بره */
+  .ltr-num {
+    direction: ltr !important;
+    text-align: left !important;
+    unicode-bidi: plaintext !important;
+  }
+
+  /* شرایط در چاپ فشرده‌تر */
+  .print-terms {
+    font-size: 10.5px !important;
+  }
+}
+/* ===== چاپ فاکتور ===== */
+@media print {
+  .print-hide { display: none !important; }
+  .print-sheet { direction: rtl !important; }
+  .print-card { break-inside: avoid; page-break-inside: avoid; }
+}
+
+/* جدول فاکتور: RTL واقعی + راست‌چین */
+.invoice-table {
+  direction: rtl;
+}
+.invoice-table th,
+.invoice-table td {
+  text-align: right;
+  vertical-align: middle;
+}
+
+/* فقط برای عددها: چپ‌چین/لاتین ولی اعداد فارسی */
+.ltr-num {
+  direction: ltr;
+  unicode-bidi: bidi-override;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+/* اگر خواستی کل برگه چاپ A4 فشرده‌تر بشه */
+@page {
+  size: A4;
+  margin: 12mm;
+}
+@media print {
+  @page { size: A4; margin: 10mm; }
+
+  /* کل صفحه چاپ */
+  .print-sheet { direction: rtl !important; }
+
+  /* ✅ مهم: کارت‌ها اجازه داشته باشند بشکنند */
+  .print-card {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  /* ✅ فقط جدول و ردیف‌ها را حفظ کن */
+  table, tr, td, th {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* فشرده‌تر برای یک صفحه */
+  .print-sheet * {
+    line-height: 1.35 !important;
+  }
+}

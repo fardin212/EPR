@@ -1,0 +1,4 @@
+# Updated: 28 Nov 2025
+User-agent: *
+Allow: /
+Sitemap: https://conexnikan.com/sitemap.xml

@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 18, "column": 0}, "map": {"version":3,"sources":["file:///home/fardin/EPR/erp-nikan/app/page.tsx"],"sourcesContent":["// app/page.tsx\nimport { redirect } from \"next/navigation\";\n\nexport default function Home() {\n  redirect(\"/dashboard\");\n}\n"],"names":[],"mappings":"AAAA,eAAe;;;;;AACf;AAAA;;AAEe,SAAS;IACtB,IAAA,iMAAQ,EAAC;AACX"}}]
+}

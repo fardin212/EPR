@@ -1,0 +1,20 @@
+{
+  "node": {
+    "40493bba82f59d30f529dbd6c661f32437b949cb32": {
+      "workers": {
+        "app/dashboard/container-estimates/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/container-estimates/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/dashboard/container-estimates/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteContainerEstimateAction",
+          "filename": "app/dashboard/container-estimates/actions.ts"
+        }
+      },
+      "layer": {
+        "app/dashboard/container-estimates/page": "action-browser"
+      },
+      "exportedName": "deleteContainerEstimateAction",
+      "filename": "app/dashboard/container-estimates/actions.ts"
+    }
+  },
+  "edge": {}
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Conex Nikan",
+  "short_name": "ConexNikan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#04081a",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ]
+}

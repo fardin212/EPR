@@ -1,0 +1,65 @@
+{
+  "node": {
+    "408c9de0a569146b8bcbb00d2926aeb5ad312f1efa": {
+      "workers": {
+        "app/dashboard/settings/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/settings/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/dashboard/settings/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "adminCreateUser",
+          "filename": "app/dashboard/settings/actions.ts"
+        }
+      },
+      "layer": {
+        "app/dashboard/settings/page": "action-browser"
+      },
+      "exportedName": "adminCreateUser",
+      "filename": "app/dashboard/settings/actions.ts"
+    },
+    "40c68b05d0f702360315db63a82ee7519c994d933b": {
+      "workers": {
+        "app/dashboard/settings/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/settings/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/dashboard/settings/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "adminListUsers",
+          "filename": "app/dashboard/settings/actions.ts"
+        }
+      },
+      "layer": {
+        "app/dashboard/settings/page": "action-browser"
+      },
+      "exportedName": "adminListUsers",
+      "filename": "app/dashboard/settings/actions.ts"
+    },
+    "403d239f2e4f68bc757cd7033b4d4b52c85181f2a4": {
+      "workers": {
+        "app/dashboard/settings/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/settings/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/dashboard/settings/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "adminSetUserActive",
+          "filename": "app/dashboard/settings/actions.ts"
+        }
+      },
+      "layer": {
+        "app/dashboard/settings/page": "action-browser"
+      },
+      "exportedName": "adminSetUserActive",
+      "filename": "app/dashboard/settings/actions.ts"
+    },
+    "40ab709d30d32ffd879dfc835559627ebe7e8c01e3": {
+      "workers": {
+        "app/dashboard/settings/page": {
+          "moduleId": "[project]/.next-internal/server/app/dashboard/settings/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/dashboard/settings/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "adminUpdateUserRole",
+          "filename": "app/dashboard/settings/actions.ts"
+        }
+      },
+      "layer": {
+        "app/dashboard/settings/page": "action-browser"
+      },
+      "exportedName": "adminUpdateUserRole",
+      "filename": "app/dashboard/settings/actions.ts"
+    }
+  },
+  "edge": {}
+}
